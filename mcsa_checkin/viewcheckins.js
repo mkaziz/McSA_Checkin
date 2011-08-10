@@ -10,9 +10,9 @@ var currInfowindow = null;
  */
 $(document).ready(function() {
 	checkLoggedIn();
-	//getCheckinsList();
-	loadMap();
-	getLocations();
+	getCheckinsList();
+	//loadMap();
+	//getLocations();
 });
 
 /**
@@ -71,6 +71,7 @@ function displayCheckinText(jsonData) {
 
 	// clear out map div;
 	$("#map").html("");
+	$("#switch").html("<div id='switch' style='font-size: 12px;' align='right'><a href='#' onclick='loadMap();'>Switch to Map View</a></div>");
 
 	var checkinArr = jsonData.data;
 	var checkinStr = "";
@@ -110,6 +111,7 @@ function loadMap() {
 
 	// clear checkin text
 	$("#checkintxt").html("");
+	$("#switch").html("<div id='switch' style='font-size: 12px;' align='right'><a href='#' onclick='getCheckinsList();'>Switch to List View</a></div>");
 
 	$("#map").html("<div id=\"map_canvas\"></div>");
 
@@ -124,6 +126,8 @@ function loadMap() {
     	};
 
     map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+    
+    getLocations();
 
 }
 
@@ -183,7 +187,7 @@ function loadMarkers(jsonData) {
 	for (var name in markersTextArr) {
 		if (markersTextArr[name].location.hasCheckin) {
 			markersTextArr[name].text += "<br><table><tr style='width: auto;'>";
-			markersTextArr[name].text += "<td><div style='width: auto; text-align: right'><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+");'></div></td>";
+			markersTextArr[name].text += "<td><div class='markertxt'>Are you also at "+markersTextArr[name].location.location_name+"?</div></td>";
 			markersTextArr[name].text += "<td><input type='submit' id='submit' value='Check In!'></td>";
 			markersTextArr[name].text += "</tr><table>";
 		}

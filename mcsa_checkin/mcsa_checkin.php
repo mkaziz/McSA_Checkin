@@ -116,7 +116,6 @@ function getCheckinsList() {
 	global $debug;
 	
 	$checkinsListQuery = "SELECT c.checkin_id, u.firstname, l.location_id, l.name as location_name, date_format(c.timestamp, '%a, %b %e') as date, date_format(c.timestamp, '%h:%i%p') as time FROM checkin_table AS c JOIN ( select user_id, MAX(timestamp) as timestamp from checkin_table group by user_id ) as x on (x.user_id = c.user_id and x.timestamp = c.timestamp) join (select name, location_id from locations_table) as l on (c.location_id = l.location_id) join (select firstname, user_id from users_table) as u where (u.user_id = c.user_id) order by c.timestamp desc";
-	
 
 	if ($debug) 
 		println("Executing query: ".$checkinsListQuery);
@@ -124,7 +123,7 @@ function getCheckinsList() {
 	$result = mysql_query($checkinsListQuery) or 
 		die(formatErrorMsg(mysql_error()));
 
-	echo ($result);
+	echo formatSuccessReponse($result);
 }
 
 /**
