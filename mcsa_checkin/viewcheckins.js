@@ -168,7 +168,7 @@ function loadMarkers(jsonData) {
 		var tempString;
 
 		if (locArr[i].hasCheckin) {
-			tempString = "<div class='markertxt'> - <b>"+locArr[i].firstname+"</b> checked in at <b>"+locArr[i].time+"</b> on "+locArr[i].date+"</div>";
+			tempString = "<div class='markertxt' style='min-width: 270px;'> - <b>"+locArr[i].firstname+"</b> checked in at <b>"+locArr[i].time+"</b> on "+locArr[i].date+"</div>";
 		}
 		else {
 			tempString = "<div class='markertxt'>Nobody's checked in at "+locArr[i].location_name+". Are you here? Check in now!</div>";
@@ -186,9 +186,9 @@ function loadMarkers(jsonData) {
 	
 	for (var name in markersTextArr) {
 		if (markersTextArr[name].location.hasCheckin) {
-			markersTextArr[name].text += "<br><table><tr style='width: auto;'>";
+			markersTextArr[name].text += "<br><table style='width: 100%;'><tr style='-moz-available'>";
 			markersTextArr[name].text += "<td><div class='markertxt'>Are you also at "+markersTextArr[name].location.location_name+"?</div></td>";
-			markersTextArr[name].text += "<td><input type='submit' id='submit' value='Check In!'></td>";
+			markersTextArr[name].text += "<td align=right><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+");'></td>";
 			markersTextArr[name].text += "</tr><table>";
 		}
 		else {
