@@ -127,79 +127,105 @@ function loadMap() {
 
 }
 
+function checkIn(location_id) {
+
+	$.ajax({type:"POST",
+		url:"mcsa_checkin.php",
+        	data: "query_id=checkin&locationsmenu="+location_id+"&user_id="+localStorage["mcsa_checkin_userid"],
+                success: function(html){
+			if (html == "") 
+				alert("return data is null.");
+//				alert(html);
+				checkInsertSuccess(html);
+			}
+          });
+}
+
+function checkInsertSuccess(html) {
+
+	var jsonData = $.parseJSON(html);
+	
+	if (jsonData.status == 1) {
+		window.location = "viewcheckins.html";
+	}
+	else 
+		alert("error in server response: " + html);
+
+}
+
 function loadMarkers(jsonData) {
 	
 	var locArr = jsonData.data;
+	var markersTextArr = [];
 	
 	for (var i = 0; i < locArr.length; i++) {
 	
 		var marker;
-	
+		var tempString;
+
 		if (locArr[i].hasCheckin) {
+			tempString = "<div class='markertxt'> - <b>"+locArr[i].firstname+"</b> checked in at <b>"+locArr[i].time+"</b> on "+locArr[i].date+"</div>";
+		}
+		else {
+			tempString = "<div class='markertxt'>Nobody's checked in at "+locArr[i].location_name+". Are you here? Check in now!</div>";
+		}
+
+		if (markersTextArr[locArr[i].location_name] == null) {
+			markersTextArr[locArr[i].location_name] = { text: "<div class='markerhead'><b>"+locArr[i].location_name+"</b></div>"+tempString,
+															 location: locArr[i]};
+		}
+		else {
+			markersTextArr[locArr[i].location_name].text += tempString;			
+		}
+		//createWindow(marker,locArr[i]);	
+	}
+	
+	for (var name in markersTextArr) {
+		if (markersTextArr[name].location.hasCheckin) {
+			markersTextArr[name].text += "<br><table><tr style='width: auto;'>";
+			markersTextArr[name].text += "<td><div style='width: auto; text-align: right'><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+");'></div></td>";
+			markersTextArr[name].text += "<td><input type='submit' id='submit' value='Check In!'></td>";
+			markersTextArr[name].text += "</tr><table>";
+		}
+		else {
+			markersTextArr[name].text += "<div style='width: auto; text-align: right'><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+");'></div>";
+		}
+		createWindow(markersTextArr[name]);
+	}
+	
+}
+
+function createWindow(markerTextData) {
+
+		var locData = markerTextData.location;
+		var locText = markerTextData.text;
+		var marker;
+		
+		if (markerTextData.location.hasCheckin) {
 			marker = new google.maps.Marker({
-				position: new google.maps.LatLng(locArr[i]["latitude"], locArr[i]["longitude"]),
+				position: new google.maps.LatLng(locData["latitude"], locData["longitude"]),
 				map: map,
 				icon: "http://www.google.com/intl/en_us/mapfiles/ms/micons/green-dot.png"
 			});
 		}
 		else {
 			marker = new google.maps.Marker({
-				position: new google.maps.LatLng(locArr[i]["latitude"], locArr[i]["longitude"]),
+				position: new google.maps.LatLng(locData["latitude"], locData["longitude"]),
 				map: map,
 				icon: "http://www.google.com/intl/en_us/mapfiles/ms/micons/red-dot.png"
 			});
 		}
-		createWindow(marker,locArr[i]);	
-	}
-	addAllWindows();
-}
+							
+		var infowindow = new google.maps.InfoWindow({
+			content: locText,
+			maxWidth: 270
+		});
 
-function addAllWindows() {
-	
-	for (obj in markersArray) {
-		var infowindow = markersArray[obj].infowindow;
-		var marker = markersArray[obj];
+		google.maps.event.addListener(marker, 'click', function() {openInfowindow(infowindow, marker)});
 		
-		infowindow['content'] = infowindow['content'];
-		
-		addAWindow(marker, infowindow);
-	}
-}
-
-function addAWindow(marker, infowindow) {
-	google.maps.event.addListener(marker, 'click', function() {openInfowindow(infowindow, marker)});
-}
-
-function createWindow(marker, locData) {
-		
-		var tempString;
-		if (locData.hasCheckin)
-			tempString = "<div class='markertxt'> - <b>"+locData.firstname+"</b> checked in at <b>"+locData.time+"</b> on "+locData.date+".</div>";	
-		else
-			tempString = "<div class='markertxt'>Nobody's checked in at "+locData.location_name+". Are you here? Check in now!</div>";
-		
-		if (markersArray[locData.location_name] == null) 
-		{
+		markersArray[locData.location_name] = marker;
+		markersArray[locData.location_name].infowindow = infowindow;
 			
-			var infowindow = new google.maps.InfoWindow({
-				content: "<div class='markerhead'><b>"+locData.location_name+"</b></div>"+tempString,
-				maxWidth: 270
-			});
-
-			//google.maps.event.addListener(marker, 'click', function() {openInfowindow(infowindow, marker)});
-			
-			markersArray[locData.location_name] = marker;
-			markersArray[locData.location_name].infowindow = infowindow;
-			/*
-			var infowindow = markersArray[locData.location_name].infowindow;
-			infowindow['content'] = infowindow['content'] + tempString;
-			*/	
-		}		
-		else {
-			var infowindow = markersArray[locData.location_name].infowindow;
-			infowindow['content'] = infowindow['content'] + tempString;
-		}		
-	
 }
 
 function openInfowindow(infowindow, marker) {
