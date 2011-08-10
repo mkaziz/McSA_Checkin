@@ -1,0 +1,63 @@
+html { 
+}
+
+body {
+    font-family: Arial;
+    margin: 80px;
+    font-size: 14px;
+    color: #330333;    
+}
+
+.error {
+    font-family: Arial;
+    visibility: hidden;
+    display: inline;
+    color: DarkRed;
+    background-color: LightYellow;
+    width: auto;
+    position: relative;
+    border: 1px solid gray;
+    -webkit-box-shadow: 3px 3px 15px #999999;
+    -webkit-border-radius: 3px;
+    padding: 4px;
+}
+
+form,div.msg {
+    display: table;
+    margin-top: 12px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid gray;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-box-shadow: inset 0 0 4px 1px gray;  
+}
+
+div.tinyerror {
+    color: red;
+    visibility: hidden;
+    font-size: 10pt;
+}
+
+#map_canvas {
+     width: 450px;
+     height: 450px;
+}
+
+.markertxt {
+	font-size: 9pt;
+	color: #666;
+	font-weight: normal;
+}
+
+.markerhead {
+	font-size: 11pt;
+	color: #222;
+}
+
+.markertxt b {
+	color: black;
+	font-weight: normal;
+	font-size: 9.1pt;
+}
+

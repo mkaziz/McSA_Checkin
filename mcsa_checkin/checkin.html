@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>NU-McSA Checkin - Check In!</title>
+	<link rel="stylesheet" href="mcsa_checkin.css"/>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="checkin.js"></script>
+</head>
+
+<body>
+
+	<form id = "checkin" action = "" method="post" onsubmit="return checkIn();">
+		<div id="noselect" class="tinyerror"></div>
+		<select id="locationsmenu" name="locationsmenu"></select><br><br>
+		<center><input type="submit" id="submit" value="Check In!"><br><br>
+
+		<span style="font-size: 12px;"><a href="login.html" onclick="logOut();">Log Out</a> | 
+			<a href="viewcheckins.html" >Look for People</a></span>
+		</center>
+	</form>
+
+
+</body>
+
+</html>
