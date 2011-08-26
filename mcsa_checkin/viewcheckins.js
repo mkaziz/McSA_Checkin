@@ -10,9 +10,9 @@ var currInfowindow = null;
  */
 $(document).ready(function() {
 	checkLoggedIn();
-	getCheckinsList();
-	//loadMap();
-	//getLocations();
+	//getCheckinsList();
+	loadMap();
+	getLocations();
 });
 
 /**
@@ -36,7 +36,11 @@ function logOut() {
 	//window.location = "login.html";
 
 }
-
+/**
+ * For list view - makes an AJAX request for a list of all checkins.
+ * TODO: Once the app is in use, fix to return recent checkins within
+ * a certain time limit.
+ */
 function getCheckinsList() {
 
 	$.ajax({type:"POST",
@@ -53,7 +57,9 @@ function getCheckinsList() {
                 });
 
 }
-
+/**
+ * Converts the JSON returned by the PHP into a readable array
+ */
 function processOutput(html) {
 
 	var jsonData = $.parseJSON(html);
@@ -67,6 +73,12 @@ function processOutput(html) {
 
 }
 
+/**
+ * Clears out the map div, and writes out the HTML for the list view.
+ * The clearing out is done instead of a display/hide so that a refresh
+ * takes place the next time the map is loaded. Parameter is the formatted
+ * JSONdata.
+ */
 function displayCheckinText(jsonData) {
 
 	// clear out map div;
@@ -89,7 +101,12 @@ function displayCheckinText(jsonData) {
 
 }
 
-
+/**
+ * Gets a list of all locations, which are then used to load the markers
+ * for the map view. Locations contain all required data, including 
+ * whether a location has a checkin, and if so, the details of that 
+ * checkin.
+ */
 function getLocations() {
 
 	$.ajax({type:"POST",
@@ -107,6 +124,12 @@ function getLocations() {
 
 }
 
+/**
+ * Clears checkin list, and then loads the Google Map by writing
+ * out any HTML and doing any necessary JS processing. When done, 
+ * it sends out a request for a list of locations so that markers can
+ * be created
+ */
 function loadMap() {
 
 	// clear checkin text
@@ -131,7 +154,15 @@ function loadMap() {
 
 }
 
-function checkIn(location_id) {
+/**
+ * Confirms that the user wishes to checkin somewhere. If yes, sends
+ * an AJAX request to the backend PHP.
+ */
+function checkIn(location_id, location_name) {
+	
+	if (!confirm("You are going to check in at " + location_name + ". Is that fine?")) {
+		return;
+	}
 
 	$.ajax({type:"POST",
 		url:"mcsa_checkin.php",
@@ -145,6 +176,10 @@ function checkIn(location_id) {
           });
 }
 
+/**
+ * Checks response to make sure checkin happened. If it did, refreshes
+ * page.
+ */
 function checkInsertSuccess(html) {
 
 	var jsonData = $.parseJSON(html);
@@ -156,7 +191,10 @@ function checkInsertSuccess(html) {
 		alert("error in server response: " + html);
 
 }
-
+/**
+ * Creates the text for the infowindows of all the markers. Then, creates
+ * the markers and infowindows themselves by calling a helper function.
+ */
 function loadMarkers(jsonData) {
 	
 	var locArr = jsonData.data;
@@ -184,21 +222,27 @@ function loadMarkers(jsonData) {
 		//createWindow(marker,locArr[i]);	
 	}
 	
+	markersArray = [];
+	
 	for (var name in markersTextArr) {
 		if (markersTextArr[name].location.hasCheckin) {
 			markersTextArr[name].text += "<br><table style='width: 100%;'><tr style='-moz-available'>";
 			markersTextArr[name].text += "<td><div class='markertxt'>Are you also at "+markersTextArr[name].location.location_name+"?</div></td>";
-			markersTextArr[name].text += "<td align=right><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+");'></td>";
+			markersTextArr[name].text += "<td align=right><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+",\""+name+"\");'></td>";
 			markersTextArr[name].text += "</tr><table>";
 		}
 		else {
-			markersTextArr[name].text += "<div style='width: auto; text-align: right'><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+");'></div>";
+			markersTextArr[name].text += "<div style='width: auto; text-align: right'><input type='button' id='submit' value='Check In!' onclick='checkIn("+markersTextArr[name].location.location_id+",\""+name+"\");'></div>";
 		}
 		createWindow(markersTextArr[name]);
 	}
 	
 }
 
+/**
+ * Function that creates the markers and the infowindows for those
+ * markers.
+ */
 function createWindow(markerTextData) {
 
 		var locData = markerTextData.location;
@@ -232,6 +276,9 @@ function createWindow(markerTextData) {
 			
 }
 
+/**
+ * Opens an infowindow once the markers are clicked
+ */
 function openInfowindow(infowindow, marker) {
 	if (currInfowindow != null)
 		currInfowindow.close();

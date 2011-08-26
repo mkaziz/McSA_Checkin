@@ -1,0 +1,65 @@
+*****************
+McSA Check-in App
+*****************
+
+Written by KHALID AZIZ for NORTHWESTERN UNIVERSITY's MUSLIM-CULTURAL STUDENTS ASSOCIATION.
+
+This app is similar to the checkin apps found on Facebook etc, except that it is specialized to the Northwestern campus in Evanston. Currently, users can register, log-in, checkin into various significant on-campus locations, and see where other users have checked in. There are two views users can choose from when exploring other checkins: the default map-view, which contains a Google Map with markers for various locations, and a list view, which lists out all checkins.
+
+FOR IMPLEMENTATION:
+
+* Copy the project folder into your server.
+* In mcsa_checkin.php, add the username and password of your db.
+* Set up the db as follows:
+  - create a database called mcsa_checkin_app.
+  - in the db, create a table called users_table with the following specs:
++------------+-------------+------+-----+-------------------+----------------+
+| Field      | Type        | Null | Key | Default           | Extra          |
++------------+-------------+------+-----+-------------------+----------------+
+| user_id    | int(4)      | NO   | PRI | NULL              | auto_increment |
+| password   | varchar(30) | YES  |     | NULL              |                |
+| firstname  | varchar(30) | YES  |     | NULL              |                |
+| lastname   | varchar(30) | YES  |     | NULL              |                |
+| datejoined | timestamp   | NO   |     | CURRENT_TIMESTAMP |                |
+| email      | varchar(50) | YES  |     | NULL              |                |
+| approved   | tinyint(1)  | YES  |     | 0                 |                |
++------------+-------------+------+-----+-------------------+----------------+
+
+  - create a table called locations_table with the following specs:
++-------------+----------------+------+-----+---------+----------------+
+| Field       | Type           | Null | Key | Default | Extra          |
++-------------+----------------+------+-----+---------+----------------+
+| location_id | int(6)         | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(30)    | YES  |     | NULL    |                |
+| latitude    | decimal(17,15) | YES  |     | NULL    |                |
+| longitude   | decimal(17,15) | YES  |     | NULL    |                |
++-------------+----------------+------+-----+---------+----------------+
+
+  - create a table called checkin_table with the following specs:
++-------------+-----------+------+-----+-------------------+----------------+
+| Field       | Type      | Null | Key | Default           | Extra          |
++-------------+-----------+------+-----+-------------------+----------------+
+| checkin_id  | int(6)    | NO   | PRI | NULL              | auto_increment |
+| user_id     | int(6)    | YES  |     | NULL              |                |
+| location_id | int(6)    | YES  |     | NULL              |                |
+| timestamp   | timestamp | NO   |     | CURRENT_TIMESTAMP |                |
++-------------+-----------+------+-----+-------------------+----------------+
+
+* If you want to change any names, you're going to have to modify the PHP file correspondingly.
+* Add the locations you want into the DB manually. There's currently no form to this via AJAX.
+* Users do have a registration form, but they'll beed to be approved manually by whoever has access to the db.
+* Modify the Google Map coordinates to wherever you want them to point to in the viewcheckins.js file. Currently, they point to the Northwestern Evanston campus. You might want to tinker around with the zoom etc too, depending on your needs. 
+* Once all of that is set up, the application should be running. (I apologize if it's not, and it's my fault; I set up the workspace a while back and I'm recalling all of these from memory.)
+
+Another note:
+* Currently, the MySQL code in the PHP file is set up to return ALL checkins. This is for testing purposes. If your app gains significant use, you might want to limit that to an appropriate period, like a week or a day or something.
+
+
+POTENTIAL FUTURE IMPROVEMENTS:
+
+* Form for admins to approve users.
+* Form for admins to add locations.
+* Checkin via text. 
+* Check a location for checkins via text.
+
+

@@ -8,8 +8,8 @@ if ($debug) {
 	println("Starting PHP script");
 	println("Initializing db connection");
 }
-
-$db_handle = mysql_connect("localhost","root","madareman");
+// ENTER USERNAME, PASSWORD HERE
+$db_handle = mysql_connect("localhost","user","pass");
 
 if (!$db_handle)
 	die(mysql_error());
@@ -58,7 +58,13 @@ if ($debug)
  * 
  */
 
-
+/**
+ * First fetches locations that have no checkins atm, and then adds
+ * a boolean indicating as such to the array. Then, does the same with
+ * places that do have checkins. Finally, adds compiles both sets of
+ * arrays in a larger array, and packs it up into a JSON before returning
+ * it.
+ */
 function getLocationsForMap() {
 	
 	global $debug;
