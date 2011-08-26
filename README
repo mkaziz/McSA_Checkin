@@ -66,8 +66,8 @@ TOOLS USED:
 
 * PHP 5.3.3
 * MySQL 5.1.49-1ubuntu8.1
-* Google Maps API v3	--src="http://maps.google.com/maps/api/js?sensor=false"
-* jQuery v1.4.2 	--src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"
+* Google Maps API v3	--src=http://maps.google.com/maps/api/js?sensor=false
+* jQuery v1.4.2 	--src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js
 
 
 POTENTIAL FUTURE IMPROVEMENTS:
